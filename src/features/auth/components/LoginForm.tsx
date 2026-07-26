@@ -1,0 +1,58 @@
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useSignIn } from '@/features/auth/hooks/useAuthMutations'
+
+const loginSchema = z.object({
+  email: z.string().email('Enter a valid email'),
+  password: z.string().min(1, 'Password is required'),
+})
+
+type LoginValues = z.infer<typeof loginSchema>
+
+export function LoginForm() {
+  const signIn = useSignIn()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = (location.state as { from?: Location })?.from?.pathname ?? '/admin'
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) })
+
+  async function onSubmit(values: LoginValues) {
+    try {
+      await signIn.mutateAsync(values)
+      navigate(from, { replace: true })
+    } catch {
+      // surfaced via signIn.isError below
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm space-y-4">
+      <div className="space-y-1.5">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" autoComplete="email" {...register('email')} />
+        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="password">Password</Label>
+        <Input id="password" type="password" autoComplete="current-password" {...register('password')} />
+        {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+      </div>
+      {signIn.isError && (
+        <p className="text-sm text-destructive">Invalid email or password.</p>
+      )}
+      <Button type="submit" className="w-full" disabled={signIn.isPending}>
+        {signIn.isPending ? 'Signing in…' : 'Sign in'}
+      </Button>
+    </form>
+  )
+}
