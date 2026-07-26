@@ -22,10 +22,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
-      - run: npm ci
+      # Not `npm ci`: a peer-dep conflict several layers deep in dev-only
+      # tooling (oxlint/shadcn's own transitive deps) means the lockfile can
+      # only be satisfied with legacy peer resolution, same as local installs.
+      - run: npm install --legacy-peer-deps
 
       - run: npm run build
         env:
