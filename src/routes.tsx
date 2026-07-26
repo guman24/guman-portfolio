@@ -46,36 +46,41 @@ function AdminSuspense({ children }: { children: ReactNode }) {
   )
 }
 
-export const router = createBrowserRouter([
-  {
-    element: <PublicLayout />,
-    children: [{ path: '/', element: <HomePage /> }],
-  },
-  {
-    path: '/admin/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/admin',
-    element: <AuthGuard />,
-    children: [
-      {
-        element: (
-          <AdminSuspense>
-            <AdminLayout />
-          </AdminSuspense>
-        ),
-        children: [
-          { index: true, element: <DashboardPage /> },
-          { path: 'projects', element: <ProjectsPage /> },
-          { path: 'projects/new', element: <ProjectEditPage /> },
-          { path: 'projects/:id', element: <ProjectEditPage /> },
-          { path: 'skills', element: <SkillsPage /> },
-          { path: 'timeline', element: <TimelinePage /> },
-          { path: 'messages', element: <MessagesPage /> },
-          { path: 'settings', element: <SettingsPage /> },
-        ],
-      },
-    ],
-  },
-])
+export const router = createBrowserRouter(
+  [
+    {
+      element: <PublicLayout />,
+      children: [{ path: '/', element: <HomePage /> }],
+    },
+    {
+      path: '/admin/login',
+      element: <LoginPage />,
+    },
+    {
+      path: '/admin',
+      element: <AuthGuard />,
+      children: [
+        {
+          element: (
+            <AdminSuspense>
+              <AdminLayout />
+            </AdminSuspense>
+          ),
+          children: [
+            { index: true, element: <DashboardPage /> },
+            { path: 'projects', element: <ProjectsPage /> },
+            { path: 'projects/new', element: <ProjectEditPage /> },
+            { path: 'projects/:id', element: <ProjectEditPage /> },
+            { path: 'skills', element: <SkillsPage /> },
+            { path: 'timeline', element: <TimelinePage /> },
+            { path: 'messages', element: <MessagesPage /> },
+            { path: 'settings', element: <SettingsPage /> },
+          ],
+        },
+      ],
+    },
+  ],
+  // BASE_URL is '/' in dev and '/guman-portfolio/' in the GitHub Pages build —
+  // must match so React Router resolves paths correctly under the repo subpath.
+  { basename: import.meta.env.BASE_URL },
+)
