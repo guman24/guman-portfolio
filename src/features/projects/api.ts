@@ -23,8 +23,8 @@ export async function incrementProjectView(projectId: string) {
 export const PROJECT_CATEGORIES: { value: ProjectCategory; label: string }[] = [
   { value: 'mobile', label: 'Mobile Apps' },
   { value: 'full_stack', label: 'Full-Stack' },
-  { value: 'ui_ux', label: 'UI/UX' },
-  { value: 'ai_tools', label: 'AI Tools' },
+  // { value: 'ui_ux', label: 'UI/UX' },
+  // { value: 'ai_tools', label: 'AI Tools' },
 ]
 
 // ---------- admin ----------
